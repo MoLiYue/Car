@@ -1,7 +1,7 @@
 #include "trail.h"
 
 
-// ºìÍâÑ°¼£³õÊ¼»¯(½«³õÊ¼»¯ÎªÉÏÀ­ÊäÈë)
+// çº¢å¤–å¯»è¿¹åˆå§‹åŒ–(å°†åˆå§‹åŒ–ä¸ºä¸Šæ‹‰è¾“å…¥)
 // Trail -- PB0
 // Trai2 -- PA7
 
@@ -10,32 +10,32 @@ void Trail_Input_Init_JX(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
 	
-	// Ê¹ÄÜGPIOB¶Ë¿ÚÊ±ÖÓ
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOA, ENABLE);			// GPIOBÊ±ÖÓÊ¹ÄÜ
+	// ä½¿èƒ½GPIOBç«¯å£æ—¶é’Ÿ
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOA, ENABLE);			// GPIOBæ—¶é’Ÿä½¿èƒ½
 	
-	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);			// ¸´ÓÃÊ±ÖÓÊ¹ÄÜ
+	//RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);			// å¤ç”¨æ—¶é’Ÿä½¿èƒ½
 
 	
-	// Ñ°¼££ºTrail--PB0¶Ë¿ÚÅäÖÃ
+	// å¯»è¿¹ï¼šTrail--PB0ç«¯å£é…ç½®
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;	// Trail--PB0	LC
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 					// ÉÏÀ­ÊäÈë
-	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;				// ÊäÈëÄ£Ê½²»ĞèÒªÉè¶Ë¿ÚËÙ¶È
-	GPIO_Init(GPIOB, &GPIO_InitStructure);							// ³õÊ¼»¯PB0
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 					// ä¸Šæ‹‰è¾“å…¥
+	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;				// è¾“å…¥æ¨¡å¼ä¸éœ€è¦è®¾ç«¯å£é€Ÿåº¦
+	GPIO_Init(GPIOB, &GPIO_InitStructure);							// åˆå§‹åŒ–PB0
 	
-	// Ñ°¼££ºTrail--PA7¶Ë¿ÚÅäÖÃ
+	// å¯»è¿¹ï¼šTrail--PA7ç«¯å£é…ç½®
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;	// Trail--PA7	RC
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 					// ÉÏÀ­ÊäÈë
-	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;				// ÊäÈëÄ£Ê½²»ĞèÒªÉè¶Ë¿ÚËÙ¶È
-	GPIO_Init(GPIOA, &GPIO_InitStructure);							// ³õÊ¼»¯PA7
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 					// ä¸Šæ‹‰è¾“å…¥
+	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;				// è¾“å…¥æ¨¡å¼ä¸éœ€è¦è®¾ç«¯å£é€Ÿåº¦
+	GPIO_Init(GPIOA, &GPIO_InitStructure);							// åˆå§‹åŒ–PA7
 	
 }
 //----------------------------------------------------------------------------------------------
 
 
-// ºÚÏßÑ°¼£º¯Êı
-// S_Trail_InputµÄµÍÈıÎ»·Ö±ğ¶ÔÓ¦[PB0\PA7]µÄ×´Ì¬Öµ
-// Î´Åöµ½ºÚÏß(½ÓÊÕµ½ºìÍâ¹â)£º¶ÔÓ¦×´Ì¬ = 0
-// Åöµ½ºÚÏß(Î´½ÓÊÕµ½ºìÍâ¹â)£º¶ÔÓ¦×´Ì¬ = 1
+// é»‘çº¿å¯»è¿¹å‡½æ•°
+// S_Trail_Inputçš„ä½ä¸‰ä½åˆ†åˆ«å¯¹åº”[PB0\PA7]çš„çŠ¶æ€å€¼
+// æœªç¢°åˆ°é»‘çº¿(æ¥æ”¶åˆ°çº¢å¤–å…‰)ï¼šå¯¹åº”çŠ¶æ€ = 0
+// ç¢°åˆ°é»‘çº¿(æœªæ¥æ”¶åˆ°çº¢å¤–å…‰)ï¼šå¯¹åº”çŠ¶æ€ = 1
 //----------------------------------------------------
 u8 Trail_black_line(void)
 {

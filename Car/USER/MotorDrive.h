@@ -5,67 +5,67 @@
 #include "stm32f10x.h"
 #include "bit_band.h"
 
-// Ð¡³µµÄÏ¨»ð/É²³µºê¶¨Òå
+// å°è½¦çš„ç†„ç«/åˆ¹è½¦å®å®šä¹‰
 //-----------------------------------
-#define CAR_FLAMEOUT	(0)	// Ï¨»ð
+#define CAR_FLAMEOUT	(0)	// ç†„ç«
 
-#define CAR_BREAK		(1)	// É²³µ
+#define CAR_BREAK		(1)	// åˆ¹è½¦
 
 extern u8 DIFFERENTIAL;
 //-----------------------------------
 
-// PB7Ä£Ê½ÅäÖÃ
+// PB7æ¨¡å¼é…ç½®
 //----------------------------------------------------------------------------
-// PB7£ºÍ¨ÓÃÍÆÍìÊä³ö
+// PB7ï¼šé€šç”¨æŽ¨æŒ½è¾“å‡º
 #define PB7_Out_PP  { GPIOB->CRL&=0X0FFFFFFF; GPIOB->CRL|=(u32)0x03<<(7*4); }
 
-// PB7£º¸´ÓÃÍÆÍìÊä³ö
+// PB7ï¼šå¤ç”¨æŽ¨æŒ½è¾“å‡º
 #define PB7_AF_PP   { GPIOB->CRL&=0X0FFFFFFF; GPIOB->CRL|=(u32)0x09<<(7*4); }
 //----------------------------------------------------------------------------
 
-// PB8Ä£Ê½ÅäÖÃ
+// PB8æ¨¡å¼é…ç½®
 //----------------------------------------------------------------------------
-// PB8£ºÍ¨ÓÃÍÆÍìÊä³ö
+// PB8ï¼šé€šç”¨æŽ¨æŒ½è¾“å‡º
 #define PB8_Out_PP  { GPIOB->CRH&=0XFFFFFFF0; GPIOB->CRH|=(u32)0x03<<(0*4); }
 
-// PB8£º¸´ÓÃÍÆÍìÊä³ö
+// PB8ï¼šå¤ç”¨æŽ¨æŒ½è¾“å‡º
 #define PB8_AF_PP   { GPIOB->CRH&=0XFFFFFFF0; GPIOB->CRH|=(u32)0x09<<(0*4); }
 //----------------------------------------------------------------------------
 
-// PB9Ä£Ê½ÅäÖÃ
+// PB9æ¨¡å¼é…ç½®
 //----------------------------------------------------------------------------
-// PB9£ºÍ¨ÓÃÍÆÍìÊä³ö
+// PB9ï¼šé€šç”¨æŽ¨æŒ½è¾“å‡º
 #define PB9_Out_PP  { GPIOB->CRH&=0XFFFFFF0F; GPIOB->CRH|=(u32)0x03<<(1*4); }
 
-// PB9£º¸´ÓÃÍÆÍìÊä³ö
+// PB9ï¼šå¤ç”¨æŽ¨æŒ½è¾“å‡º
 #define PB9_AF_PP   { GPIOB->CRH&=0XFFFFFF0F; GPIOB->CRH|=(u32)0x09<<(1*4); }
 //----------------------------------------------------------------------------
 
-// PA4Ä£Ê½ÅäÖÃ
+// PA4æ¨¡å¼é…ç½®
 //----------------------------------------------------------------------------
-// PA4£ºÍ¨ÓÃÍÆÍìÊä³ö
+// PA4ï¼šé€šç”¨æŽ¨æŒ½è¾“å‡º
 #define PA4_Out_PP  { GPIOA->CRL&=0XFFFF0FFF; GPIOA->CRL|=(u32)0x03<<(4*4); }
 
-// PA4£º¸´ÓÃÍÆÍìÊä³ö
+// PA4ï¼šå¤ç”¨æŽ¨æŒ½è¾“å‡º
 #define PA4_AF_PP   { GPIOA->CRL&=0XFFFF0FFF; GPIOA->CRL|=(u32)0x09<<(4*4); }
 //----------------------------------------------------------------------------
 
 
 //----------------------------------------------------------------------------
-void Motor_LF_forward(u8 speed);		// ×óÇ°ÂÖ=Ç°×ª(ËÙ¶È = speed%)
-void Motor_LF_backward(u8 speed);		// ×óÇ°ÂÖ=ºó×ª(ËÙ¶È = 1-speed%)
-void Motor_LF_Stop(u8 Wheel_STOP);		// ×óÇ°ÂÖ=Í£Ö¹(Ï¨»ð/É²³µ)
+void Motor_LF_forward(u8 speed);		// å·¦å‰è½®=å‰è½¬(é€Ÿåº¦ = speed%)
+void Motor_LF_backward(u8 speed);		// å·¦å‰è½®=åŽè½¬(é€Ÿåº¦ = 1-speed%)
+void Motor_LF_Stop(u8 Wheel_STOP);		// å·¦å‰è½®=åœæ­¢(ç†„ç«/åˆ¹è½¦)
 
-void Motor_RF_forward(u8 speed);		// ÓÒÇ°ÂÖ=Ç°×ª(ËÙ¶È = speed%)
-void Motor_RF_backward(u8 speed);		// ÓÒÇ°ÂÖ=ºó×ª(ËÙ¶È = 1-speed%)
-void Motor_RF_Stop(u8 Wheel_STOP);		// ÓÒÇ°ÂÖ=Í£Ö¹(Ï¨»ð/É²³µ)
+void Motor_RF_forward(u8 speed);		// å³å‰è½®=å‰è½¬(é€Ÿåº¦ = speed%)
+void Motor_RF_backward(u8 speed);		// å³å‰è½®=åŽè½¬(é€Ÿåº¦ = 1-speed%)
+void Motor_RF_Stop(u8 Wheel_STOP);		// å³å‰è½®=åœæ­¢(ç†„ç«/åˆ¹è½¦)
 
-void Car_Stop(u8 Wheel_STOP);			// Ð¡³µ=Í£Ö¹(Ï¨»ð/É²³µ)
-void Car_forward(u8 speed);				// Ð¡³µÏòÇ°(ËÙ¶È = speed%)
-void Car_backward(u8 speed);			// Ð¡³µÏòºó(ËÙ¶È = -speed%)
+void Car_Stop(u8 Wheel_STOP);			// å°è½¦=åœæ­¢(ç†„ç«/åˆ¹è½¦)
+void Car_forward(u8 speed);				// å°è½¦å‘å‰(é€Ÿåº¦ = speed%)
+void Car_backward(u8 speed);			// å°è½¦å‘åŽ(é€Ÿåº¦ = -speed%)
 
-void Car_Turn_Left(u8 speed);			// Ð¡³µ×ó×ª(ËÙ¶È = speed%)
-void Car_Turn_Right(u8 speed);			// Ð¡³µÓÒ×ª(ËÙ¶È = speed%)
+void Car_Turn_Left(u8 speed);			// å°è½¦å·¦è½¬(é€Ÿåº¦ = speed%)
+void Car_Turn_Right(u8 speed);			// å°è½¦å³è½¬(é€Ÿåº¦ = speed%)
 
 void Car_Become_Right(u8 speed);
 void Car_Become_Left(u8 speed);

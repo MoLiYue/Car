@@ -28,68 +28,68 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input);
 void Single_Line(u8 S_Trail_Input, u8 S_Elude_Input, 
 									u8 Forward_Speed, u8 TurnSpeed, u8 Differential){
 	DIFFERENTIAL = Differential;
-	//S_Elude_Input = Elude_detect_barrier();	// ºìÍâ±ÜÕÏ¼ì²â
+	//S_Elude_Input = Elude_detect_barrier();	// çº¢å¤–é¿éšœæ£€æµ‹
 
-	// Î´·¢ÏÖÕÏ°­
+	// æœªå‘ç°éšœç¢
 	//-------------------------------------------------------	
 	if( S_Elude_Input == Not_Find_Barrier )	{									
-		S_Trail_Input = Trail_black_line();		// ºÚÏß¼ì²âº¯Êı
-		// Î´·¢ÏÖºÚÏß    forward
+		S_Trail_Input = Trail_black_line();		// é»‘çº¿æ£€æµ‹å‡½æ•°
+		// æœªå‘ç°é»‘çº¿    forward
 		//-------------------------------------------------------	
 		if(S_Trail_Input == Not_Find_Black_Line)	{
-			Car_forward(Forward_Speed);				// Ç°½ø
+			Car_forward(Forward_Speed);				// å‰è¿›
 		}
 		//-------------------------------------------------------
 
-		// ×ó²à·¢ÏÖºÚÏß
+		// å·¦ä¾§å‘ç°é»‘çº¿
 		//----------------------------------------------
 		else if(S_Trail_Input == Left_Find_Black_Line){
 			//Car_Stop(CAR_BREAK);
-			Car_Become_Left(TurnSpeed);	// ×ó×ª
+			Car_Become_Left(TurnSpeed);	// å·¦è½¬
 			//delay_ms(100);
 		}
 	
-		// ÓÒ²à·¢ÏÖºÚÏß
+		// å³ä¾§å‘ç°é»‘çº¿
 		//----------------------------------------------
 		else if(S_Trail_Input == Right_Find_Black_Line){
 			//Car_Stop(CAR_BREAK);
-			Car_Become_Right(TurnSpeed);	// ÓÒ×ª
+			Car_Become_Right(TurnSpeed);	// å³è½¬
 			//delay_ms(100);
 		}
 	
-		// ÆäËûÇé¿ö
+		// å…¶ä»–æƒ…å†µ
 		//----------------------------------------------
 		else {
-			Car_Stop(CAR_FLAMEOUT);	// Ï¨»ğ
+			Car_Stop(CAR_FLAMEOUT);	// ç†„ç«
 		}
 	//----------------------------------------------
 	// Single Line
 	}
-	// ·¢ÏÖÕÏ°­
+	// å‘ç°éšœç¢
 	//----------------------------------------------
 	else{
-		Car_backward(50);	// ºóÍË
+		Car_backward(50);	// åé€€
 		delay_ms(500);
-		Car_Turn_Left(50);	// ×ó×ª
+		Car_Turn_Left(50);	// å·¦è½¬
 		delay_ms(500);
 	}
 }
 
 void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
-	//S_Elude_Input = Elude_detect_barrier();	// ºìÍâ±ÜÕÏ¼ì²â
+	//S_Elude_Input = Elude_detect_barrier();	// çº¢å¤–é¿éšœæ£€æµ‹
 
-	// Î´·¢ÏÖÕÏ°­
+	// æœªå‘ç°éšœç¢
 	//-------------------------------------------------------	
 	if( S_Elude_Input == Not_Find_Barrier )	{
-		S_Trail_Input = Trail_black_line();		// ºÚÏß¼ì²âº¯Êı-
-		// Î´·¢ÏÖºÚÏß    forward
+		S_Trail_Input = Trail_black_line();		// é»‘çº¿æ£€æµ‹å‡½æ•°-
+		// æœªå‘ç°é»‘çº¿    forward
 		//-------------------------------------------------------	
 		if(S_Trail_Input == Not_Find_Black_Line)	{
-			Car_forward(40);				// Ç°½ø
+			Car_forward(40);				// å‰è¿›
 		}
 		//-------------------------------------------------------
 
-		// ×ó²à·¢ÏÖºÚÏß
+		// å·¦ä¾§å‘ç°é»‘çº¿
 		//----------------------------------------------
 		else if(S_Trail_Input == Left_Find_Black_Line){
 			//Car_backward(50);
@@ -98,7 +98,7 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 			delay_ms(150);
 		}
 
-		// ÓÒ²à·¢ÏÖºÚÏß
+		// å³ä¾§å‘ç°é»‘çº¿
 		//----------------------------------------------
 		else if(S_Trail_Input == Right_Find_Black_Line){
 			//Car_backward(50);
@@ -106,10 +106,10 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 			Car_Turn_Left(50);
 			delay_ms(150);
 		}
-		// ÆäËûÇé¿ö
+		// å…¶ä»–æƒ…å†µ
 		//----------------------------------------------
 		else {
-//			Car_backward(50);	// ºóÍË
+//			Car_backward(50);	// åé€€
 //			delay_ms(500);
 //			Car_Turn_Left(50);	//Left
 //			delay_ms(200);
@@ -120,9 +120,9 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 	//----------------------------------------------
 	// Dubble Line
 	}else{
-		Car_backward(50);	// ºóÍË
+		Car_backward(50);	// åé€€
 		delay_ms(500);
-		Car_Turn_Left(50);	// ×ó×ª
+		Car_Turn_Left(50);	// å·¦è½¬
 		delay_ms(500);
 	}
 }
@@ -154,7 +154,7 @@ void Maze_Track(u8 S_Trail_Input){
 
 
 		if(Have_OB == 0){
-			//Car_backward(50);	// ºóÍË
+			//Car_backward(50);	// åé€€
 			//delay_ms(500);
 			Car_Turn_Left(50);	//Left
 			delay_ms(370);
@@ -174,7 +174,7 @@ void Maze_Track(u8 S_Trail_Input){
 			delay_ms(60);
 			
 			if(Have_OB == 0){
-				//Car_backward(50);	// ºóÍË
+				//Car_backward(50);	// åé€€
 				//delay_ms(500);
 				Car_Turn_Right(50);	// Right
 				delay_ms(370);

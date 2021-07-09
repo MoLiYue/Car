@@ -2,10 +2,10 @@
 #include "delay.h"
 #include "MotorDrive.h"
 
-//u8 S_Elude_Input = 0 ;		// ºìÍâ±ÜÕÏÄ£¿éµÄ·µ»ØÖµ
+//u8 S_Elude_Input = 0 ;		// çº¢å¤–é¿éšœæ¨¡å—çš„è¿”å›å€¼
 
 
-// ºìÍâ±ÜÕÏ³õÊ¼»¯(½«PB1³õÊ¼»¯ÎªÉÏÀ­ÊäÈë)
+// çº¢å¤–é¿éšœåˆå§‹åŒ–(å°†PB1åˆå§‹åŒ–ä¸ºä¸Šæ‹‰è¾“å…¥)
 
 //----------------------------------------------------------------------------------------------
 void Elude_Input_Init_JX(void)
@@ -14,14 +14,14 @@ void Elude_Input_Init_JX(void)
 	EXTI_InitTypeDef EXTI_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);			// GPIOBÊ±ÖÓÊ¹ÄÜ
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);			// GPIOBæ—¶é’Ÿä½¿èƒ½
 	
 	
-	// ±ÜÕÏ£ºElude--PB1
+	// é¿éšœï¼šElude--PB1
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;	// Elude--PB1
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 					// ÉÏÀ­ÊäÈë
-	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;				// ÊäÈëÄ£Ê½²»ĞèÒªÉè¶Ë¿ÚËÙ¶È
-	GPIO_Init(GPIOB, &GPIO_InitStructure);							// ³õÊ¼»¯PB1
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 					// ä¸Šæ‹‰è¾“å…¥
+	//GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;				// è¾“å…¥æ¨¡å¼ä¸éœ€è¦è®¾ç«¯å£é€Ÿåº¦
+	GPIO_Init(GPIOB, &GPIO_InitStructure);							// åˆå§‹åŒ–PB1
 	
 //	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB,GPIO_PinSource1);
 	
@@ -42,10 +42,10 @@ void Elude_Input_Init_JX(void)
 //----------------------------------------------------------------------------------------------
 
 
-// ºìÍâ±ÜÕÏ¼ì²âº¯Êı
-// S_Elude_InputµÄµÍÈıÎ»·Ö±ğ¶ÔÓ¦[PB1]µÄ×´Ì¬Öµ
-// Î´Óöµ½ÕÏ°­(Î´½ÓÊÕµ½ºìÍâ¹â)£º¶ÔÓ¦×´Ì¬ = 1
-// Óöµ½ÕÏ°­(½ÓÊÕµ½ºìÍâ¹â)£º¶ÔÓ¦×´Ì¬ = 0
+// çº¢å¤–é¿éšœæ£€æµ‹å‡½æ•°
+// S_Elude_Inputçš„ä½ä¸‰ä½åˆ†åˆ«å¯¹åº”[PB1]çš„çŠ¶æ€å€¼
+// æœªé‡åˆ°éšœç¢(æœªæ¥æ”¶åˆ°çº¢å¤–å…‰)ï¼šå¯¹åº”çŠ¶æ€ = 1
+// é‡åˆ°éšœç¢(æ¥æ”¶åˆ°çº¢å¤–å…‰)ï¼šå¯¹åº”çŠ¶æ€ = 0
 //-------------------------------------------------------------
 u8 Elude_detect_barrier(void)
 {
