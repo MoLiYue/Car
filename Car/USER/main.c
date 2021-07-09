@@ -144,7 +144,7 @@ void Maze_Track(u8 S_Trail_Input){
 
 		TIM_SetCompare1(TIM5,ANGLE4);//Left
 		Have_OB = 0;
-		delay_ms(1000);								//wait for DUOJI
+		delay_ms(1000);								//wait for 舵机
 		
 		UltraDis = 900;
 		GPIO_SetBits(GPIOC,GPIO_Pin_0);
@@ -166,7 +166,7 @@ void Maze_Track(u8 S_Trail_Input){
 		
 			TIM_SetCompare1(TIM5,ANGLE0);//Right
 			Have_OB = 0;
-			delay_ms(1000);								//wait for DUOJI
+			delay_ms(1000);								//wait for 舵机
 		
 			GPIO_SetBits(GPIOC,GPIO_Pin_0);
 			delay_us(10);

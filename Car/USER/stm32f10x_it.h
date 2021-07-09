@@ -46,6 +46,9 @@ void SysTick_Handler(void);
 void EXTI1_IRQHandler(void);
 void EXTI2_IRQHandler(void);
 
+void TIM1_IRQHandler(void);
+void TIM2_IRQHandler(void);
+
 #endif /* __STM32F10x_IT_H */
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
