@@ -53,7 +53,7 @@ PA1(TIM2_CH2/TIM5_CH2)
 TIM1_IRQHandler
 TIM2_IRQHandler
 EXTI1_IRQHandler
-EXTI2_IRQHandler
+EXTI2_IRQHandler  0x00			0x00			key
 
 
 

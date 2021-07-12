@@ -1,6 +1,6 @@
 #include "remote.h"
 
-void RemoteControl(){
+void Remote_Control_Init(void){
 
     GPIO_InitTypeDef GPIO_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
@@ -60,8 +60,20 @@ u8 Remote_Scan(void){
     u8 sta = 0;
     u8 t1, t2;
     if(RmtSta & (1<<6)){
-        t1 = RmtRec >>24;
-        t2 = (RmtRec >> 16) & 0xff;
+        t1 = RmtRec >>24;               //得到地址码
+        t2 = (RmtRec >> 16) & 0xff;     //得到地址反码
+        if((t1 == (u8)~t2) && t1 == REMOTE_ID)// 检验遥控识别码 ( 及地址
+        { 
+            t1=RmtRec>>8;
+            t2=RmtRec;
+            if(t1 == (u8)~t2)
+                sta=t1;// 键值正确
+        }
+        if((sta==0) || ((RmtSta & 0X80) == 0))// 按键数据错误 /遥控已经没有按下了
+        { 
+            RmtSta&=~(1<<6);// 清除接收到有效按键标识
+            RmtCnt=0; // 清除按键次数计数器
+        } 
     }
-
+    return sta;
 }

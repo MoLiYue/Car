@@ -101,12 +101,14 @@ void EXTI2_IRQHandler(void)
 		{ 
 			StatusMode++;			//have problem not solved
 			delay_ms(10);
-			if(StatusMode%3 == 0)
+			if(StatusMode%4 == 0)
 				Stat = Single_Track;
-			else if(StatusMode%3 == 1)
+			else if(StatusMode%4 == 1)
 				Stat = Double_Track;
-			else if(StatusMode%3 == 2)
+			else if(StatusMode%4 == 2)
 				Stat = Maze;
+      else if(StatusMode%4 == 3)
+				Stat = RemoteControl;
 		}
 		EXTI_ClearITPendingBit(EXTI_Line2);
 	}

@@ -37,3 +37,4 @@
 ..\obj\main.o: ..\SYSTEM\delay\delay.h
 ..\obj\main.o: key.h
 ..\obj\main.o: ultrasound.h
+..\obj\main.o: remote.h

@@ -6,7 +6,8 @@
 
 #define Single_Track	(0x00)
 #define Double_Track	(0x01)
-#define Maze					(0x02)
+#define Maze			(0x02)
+#define RemoteControl   (0x03)
 
 extern u8 StatusMode;
 

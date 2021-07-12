@@ -8,6 +8,7 @@
 #include "delay.h"
 #include "key.h"
 #include "ultrasound.h"
+#include "remote.h"
 
 //    GPIOB->BRR |= (1<<7);	//PB7 Set 1	(backward)	Set 0 (forward)							&= ~(1<<8);
 //    
@@ -129,12 +130,13 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 
 void Maze_Track(u8 S_Trail_Input){
 	
-	UltraDis = 700;
+	UltraDis = 700;				//设定超声波信号感知距离
+	//发射超声波信号----------------------------------
 	GPIO_SetBits(GPIOC,GPIO_Pin_0);
 	delay_us(10);
 	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
 	delay_ms(60);
-
+	//-----------------------------------------------
 	if(Have_OB == 0){
 		//Car_forward(40);
 		
@@ -167,12 +169,12 @@ void Maze_Track(u8 S_Trail_Input){
 			TIM_SetCompare1(TIM5,ANGLE0);//Right
 			Have_OB = 0;
 			delay_ms(1000);								//wait for 舵机
-		
+		//发射超声波信号------------------------------
 			GPIO_SetBits(GPIOC,GPIO_Pin_0);
 			delay_us(10);
 			GPIO_ResetBits(GPIOC,GPIO_Pin_0);
 			delay_ms(60);
-			
+		//-------------------------------------------
 			if(Have_OB == 0){
 				//Car_backward(50);	// 后退
 				//delay_ms(500);
@@ -192,43 +194,110 @@ void Maze_Track(u8 S_Trail_Input){
 				Have_OB = 0;
 			}
 		}
-		delay_ms(1000);								//wait for DUOJI
+		delay_ms(1000);								//wait for 舵机
 	}
 }
 
+void Remote_Control(u8 key){
+	key = Remote_Scan();
+	if(key){ 
+		switch(key){ 
+			case 0:		//"ERROR"
+				break;
+			case 162:	//"POWER"
+				break;
+			case 98:	//"UP"
+				break;
+			case 2:		//"PLAY"
+				break;
+			case 226:	//"ALIENTEK"
+				break;
+			case 194:	//"RIGHT"
+				break; 
+			case 34:	//"LEFT"
+				break;
+			case 224:	//"VOL-"
+				break;
+			case 168:	//"DOWN"
+				break;
+			case 144:	//"VOL+"
+				break;
+			case 104:	//"1"	左转
+				Car_Become_Left(80);
+				break;
+			case 152:	//"2"	前进
+				Car_forward(40);
+				break;
+			case 176:	//"3"	右转
+				Car_Turn_Right(50);
+				break;
+			case 48:	//"4"	左旋转
+				Car_Turn_Left(80);
+				break;
+			case 24:	//"5"	刹车
+				Car_Stop(CAR_BREAK);
+				break;
+			case 122:	//"6"	右旋转
+				Car_Turn_Right(50);
+				break;
+			case 16:	//"7"	左后转
+				Car_Become_Left_Back(80);
+				break;
+			case 56:	//"8"	后退
+				Car_backward(50);
+				break;
+			case 90:	//"9"	右后转
+				Car_Become_Right_Back(80);
+				break;
+			case 66:	//"0"
+				break;
+			case 82:	//"DELETE"
+				break;
+			default:
+				break;
+		} 
+	}else delay_ms(10);
+}
+
 int main(void){
-	
-	
+	u8 key = 0;
 	
 	delay_init();
-	NVIC_Configuration();
-	Elude_Input_Init_JX();	//hongwai
-	TIM4_PWM_Init_JX();
-	Trail_Input_Init_JX();
-	KEY_Init();
-	Ultrasound_Init();
+	NVIC_Configuration();	//设置NVIC终端分组2：2
+	Elude_Input_Init_JX();	//红外避障模块初始化
+	TIM4_PWM_Init_JX();		//pwm电机驱动初始化
+	Trail_Input_Init_JX();	//循迹模块初始化
+	KEY_Init();				//按键模块初始化
+	Ultrasound_Init();		//超声波模块初始化
+	Remote_Control_Init();	//红外遥控初始化
+
+	while(1){
 	
-while(1){
-	
-	u8 S_Elude_Input = 0;
-	u8 S_Trail_Input = 0;
-	
-	switch (Stat){
+		u8 S_Elude_Input = 0;
+		u8 S_Trail_Input = 0;
 		
-		case Single_Track:
-			Single_Line(S_Trail_Input, Elude_detect_barrier(), 50, 80, 90);
-			break;
-				
-		case Double_Track:
-			Dubble_Line(S_Trail_Input, Elude_detect_barrier());
-			break;
+		switch (Stat){
 			
-		case Maze:
-			Maze_Track(S_Trail_Input);
-			break;
-		
-		default:
-			break;
+			case Single_Track:
+				//Single_Line(S_Trail_Input, Elude_detect_barrier(), 50, 80, 90);
+				Single_Line(S_Trail_Input, Not_Find_Barrier, 50, 80, 90);
+				break;
+					
+			case Double_Track:
+				//Dubble_Line(S_Trail_Input, Elude_detect_barrier());
+				Dubble_Line(S_Trail_Input, Not_Find_Barrier);
+				break;
+				
+			case Maze:
+				Maze_Track(S_Trail_Input);
+				break;
+
+			case RemoteControl:
+				Remote_Control(key);
+				break;
+			
+			default:
+				break;
 		}
 	}
 }
