@@ -21,10 +21,24 @@
 u8 Stat = 0;
 extern u8 Have_OB;
 extern unsigned int UltraDis;
+extern u8 Maze_Mode;
 
 void Maze_Track(u8 S_Trail_Input);
 void Single_Line(u8 S_Trail_Input, u8 S_Elude_Input, u8 Forward_Speed, u8 TurnSpeed, u8 Differential);
 void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input);
+void Maze_Track(u8 S_Trail_Input);
+void Maze_Track_v2(u8 S_Trail_Input);
+void Send_UltraSound_Signal();
+
+
+void Send_UltraSound_Signal(){
+//发射超声波信号----------------------------------
+	GPIO_SetBits(GPIOC,GPIO_Pin_0);
+	delay_us(10);
+	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+	delay_ms(60);
+//-----------------------------------------------
+}
 
 void Single_Line(u8 S_Trail_Input, u8 S_Elude_Input, 
 									u8 Forward_Speed, u8 TurnSpeed, u8 Differential){
@@ -128,7 +142,7 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 }
 
 void Maze_Track(u8 S_Trail_Input){
-	
+	Maze_Mode = Obstacle_Avoidance_Mode;
 	UltraDis = 700;				//设定超声波信号感知距离
 	//发射超声波信号----------------------------------
 	GPIO_SetBits(GPIOC,GPIO_Pin_0);
@@ -136,15 +150,16 @@ void Maze_Track(u8 S_Trail_Input){
 	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
 	delay_ms(60);
 	//-----------------------------------------------
-	if(Have_OB == 0){
+	if(Have_OB == Ul_Not_Find_Barrier){
 		//Car_forward(40);
 		
-		Single_Line(S_Trail_Input, Elude_detect_barrier(), 80, 40, 40);
+		//Single_Line(S_Trail_Input, Elude_detect_barrier(), 80, 40, 40);
+		Single_Line(S_Trail_Input, Not_Find_Barrier, 80, 40, 40);
 	}else{
 		Car_Stop(CAR_BREAK);
 
 		TIM_SetCompare1(TIM5,ANGLE4);//Left
-		Have_OB = 0;
+		Have_OB = Ul_Not_Find_Barrier;
 		delay_ms(1000);								//wait for 舵机
 		
 		UltraDis = 900;
@@ -154,7 +169,7 @@ void Maze_Track(u8 S_Trail_Input){
 		delay_ms(60);
 
 
-		if(Have_OB == 0){
+		if(Have_OB == Ul_Not_Find_Barrier){
 			//Car_backward(50);	// 后退
 			//delay_ms(500);
 			Car_Turn_Left(50);	//Left
@@ -162,11 +177,11 @@ void Maze_Track(u8 S_Trail_Input){
 			Car_Stop(CAR_BREAK);
 			
 			TIM_SetCompare1(TIM5,ANGLE2);//Forward
-			Have_OB = 0;
+			Have_OB = Ul_Not_Find_Barrier;
 		}else{
 		
 			TIM_SetCompare1(TIM5,ANGLE0);//Right
-			Have_OB = 0;
+			Have_OB = Ul_Not_Find_Barrier;
 			delay_ms(1000);								//wait for 舵机
 		//发射超声波信号------------------------------
 			GPIO_SetBits(GPIOC,GPIO_Pin_0);
@@ -174,7 +189,7 @@ void Maze_Track(u8 S_Trail_Input){
 			GPIO_ResetBits(GPIOC,GPIO_Pin_0);
 			delay_ms(60);
 		//-------------------------------------------
-			if(Have_OB == 0){
+			if(Have_OB == Ul_Not_Find_Barrier){
 				//Car_backward(50);	// 后退
 				//delay_ms(500);
 				Car_Turn_Right(50);	// Right
@@ -182,7 +197,7 @@ void Maze_Track(u8 S_Trail_Input){
 				Car_Stop(CAR_BREAK);
 				
 				TIM_SetCompare1(TIM5,ANGLE2);//Forward
-				Have_OB = 0;
+				Have_OB = Ul_Not_Find_Barrier;
 			}else{
 				Car_Turn_Right(50);	// Turn Around
 				delay_ms(700);
@@ -190,7 +205,7 @@ void Maze_Track(u8 S_Trail_Input){
 				Car_Stop(CAR_BREAK);
 				
 				TIM_SetCompare1(TIM5,ANGLE2);//Forward
-				Have_OB = 0;
+				Have_OB = Ul_Not_Find_Barrier;
 			}
 		}
 		delay_ms(1000);								//wait for 舵机
@@ -199,80 +214,76 @@ void Maze_Track(u8 S_Trail_Input){
 
 void Maze_Track_v2(u8 S_Trail_Input){
 	
-	TIM_SetCompare1(TIM5,ANGLE4);//Left
-	Have_OB = 0;
-	delay_ms(1000);								//wait for 舵机
+	if(Elude_detect_barrier() == Not_Find_Barrier){
+		Maze_Mode = Tracking_Mode;
+		Have_OB = Middle;
+		if(TIM_GetCapture1(TIM5) != ANGLE4){
+			TIM_SetCompare1(TIM5,ANGLE4);		//Left
+			delay_ms(1000);								//wait for 舵机
+		}
+		Send_UltraSound_Signal();					//发射超声波信号
 
-	UltraDis = 900;				//设定超声波信号感知距离
-	//发射超声波信号----------------------------------
-	GPIO_SetBits(GPIOC,GPIO_Pin_0);
-	delay_us(10);
-	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
-	delay_ms(60);
-	//-----------------------------------------------
-	if(Have_OB == 0){
-		//Car_forward(40);
-		
-		Single_Line(S_Trail_Input, Elude_detect_barrier(), 80, 40, 40);
+		if(Have_OB == Middle){
+			//Car_forward(40);
+			
+			Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 40, 40);
+		}else if(Have_OB == Too_Near){
+			DIFFERENTIAL = 55;
+			Car_Become_Right(90);
+			//delay_ms(100);
+		}else{
+			DIFFERENTIAL = 55;
+			Car_Become_Left(90);
+			//delay_ms(100);
+		}
 	}else{
-
-
-
-
-		
+		Maze_Mode = Obstacle_Avoidance_Mode;
+		DIFFERENTIAL = 90;
 		Car_Stop(CAR_BREAK);
+		delay_ms(150);
+		Car_backward(50);					//倒车
+		delay_ms(300);
+		Car_Stop(CAR_BREAK);
+		if(TIM_GetCapture1(TIM5) != ANGLE4){
+			TIM_SetCompare1(TIM5,ANGLE4);		//Left
+			delay_ms(1000);								//wait for 舵机
+		}
+		Send_UltraSound_Signal();			//发射超声波信号
 
-		TIM_SetCompare1(TIM5,ANGLE4);//Left
-		Have_OB = 0;
-		delay_ms(1000);								//wait for 舵机
-		
-		UltraDis = 900;
-		GPIO_SetBits(GPIOC,GPIO_Pin_0);
-		delay_us(10);
-		GPIO_ResetBits(GPIOC,GPIO_Pin_0);
-		delay_ms(60);
-
-
-		if(Have_OB == 0){
+		if(Have_OB == Ul_Not_Find_Barrier){	//左边无障碍
 			//Car_backward(50);	// 后退
 			//delay_ms(500);
 			Car_Turn_Left(50);	//Left
 			delay_ms(370);
 			Car_Stop(CAR_BREAK);
 			
-			TIM_SetCompare1(TIM5,ANGLE2);//Forward
-			Have_OB = 0;
-		}else{
+			Have_OB = Ul_Not_Find_Barrier;
+		}else{								//左边有障碍
 		
-			TIM_SetCompare1(TIM5,ANGLE0);//Right
-			Have_OB = 0;
+			TIM_SetCompare1(TIM5,ANGLE0);	//Right
+			Have_OB = Ul_Not_Find_Barrier;
 			delay_ms(1000);								//wait for 舵机
-		//发射超声波信号------------------------------
-			GPIO_SetBits(GPIOC,GPIO_Pin_0);
-			delay_us(10);
-			GPIO_ResetBits(GPIOC,GPIO_Pin_0);
-			delay_ms(60);
-		//-------------------------------------------
-			if(Have_OB == 0){
+			Send_UltraSound_Signal();					//发射超声波信号
+			if(Have_OB == Ul_Not_Find_Barrier){	//右边无障碍
 				//Car_backward(50);	// 后退
 				//delay_ms(500);
 				Car_Turn_Right(50);	// Right
 				delay_ms(370);
 				Car_Stop(CAR_BREAK);
 				
-				TIM_SetCompare1(TIM5,ANGLE2);//Forward
-				Have_OB = 0;
+				TIM_SetCompare1(TIM5,ANGLE4);	//Forward
+				Have_OB = Ul_Not_Find_Barrier;
 			}else{
-				Car_Turn_Right(50);	// Turn Around
+				Car_Turn_Right(50);				// Turn Around
 				delay_ms(700);
 				//Car_forward(40);
 				Car_Stop(CAR_BREAK);
 				
-				TIM_SetCompare1(TIM5,ANGLE2);//Forward
-				Have_OB = 0;
+				TIM_SetCompare1(TIM5,ANGLE4);	//Left
+				Have_OB = Ul_Not_Find_Barrier;
 			}
+			delay_ms(1000);								//wait for 舵机
 		}
-		delay_ms(1000);								//wait for 舵机
 	}
 }
 
@@ -343,7 +354,7 @@ int main(void){
 				break;
 				
 			case Maze:
-				Maze_Track(S_Trail_Input);
+				Maze_Track_v2(S_Trail_Input);
 				break;
 
 			case RemoteControl:

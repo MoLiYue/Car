@@ -18,12 +18,24 @@
 
 #define TIM1_Reload_Num (49999)
 #define TIM1_Frequency_Divide	(71)
+// 超声波避障
+//-----------------------------------------------------------------
+#define		Ul_Not_Find_Barrier			0x00	// 未发现障碍
+#define		Ul_Find_Barrier			    0x01	// 发现障碍
 
-#define ANGLE0	(250)
+#define     Tracking_Mode               0x00    //循迹模式
+#define     Obstacle_Avoidance_Mode     0x01    //避障模式
+
+#define     Too_Far                     0x00    //距离过远
+#define     Too_Near                    0x01    //距离过远
+#define     Middle                      0x02    //距离适中
+//-----------------------------------------------------------------
+
+#define ANGLE0	(250)       //右
 #define ANGLE1	(500)
-#define ANGLE2	(750)
+#define ANGLE2	(750)       //前
 #define ANGLE3	(1000)
-#define ANGLE4	(1250)
+#define ANGLE4	(1250)      //左
 
 void Ultrasound_Init(void);
 

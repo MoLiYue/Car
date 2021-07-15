@@ -23,12 +23,18 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h" 
-#include "delay.h"
-#include "key.h"
-#include "MotorDrive.h"
-#include "ultrasound.h"
 
-unsigned int UltraDis = 900;
+/*
+        UltraDis1         UltraDis2
+            900              1200
+*/
+unsigned int UltraDis1 = 550;
+unsigned int UltraDis2 = 850;
+
+unsigned int UltraDis = 850;
+
+u8 Maze_Mode = 0;
+
 u8 overcount = 0;
 u8 Have_OB = 0;
 
@@ -120,19 +126,36 @@ void EXTI1_IRQHandler(void)
 { 
 	if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
 	{
-		overcount = 0;
-		TIM_SetCounter(TIM1, 0);
-		TIM_Cmd(TIM1, ENABLE);
-		while(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == SET);
-		TIM_Cmd(TIM1, DISABLE);
-		
-		if(TIM_GetCounter(TIM1) > UltraDis){
-			Have_OB = 0;
-		}else{
-			Have_OB = 1;
-		}
-		EXTI_ClearITPendingBit(EXTI_Line1);
-	}
+    if(Maze_Mode == Obstacle_Avoidance_Mode){
+      overcount = 0;
+      TIM_SetCounter(TIM1, 0);
+      TIM_Cmd(TIM1, ENABLE);
+      while(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == SET);
+      TIM_Cmd(TIM1, DISABLE);
+
+      if(TIM_GetCounter(TIM1) > UltraDis){
+        Have_OB = Ul_Not_Find_Barrier;
+      }else{
+        Have_OB = Ul_Find_Barrier;
+      }
+    }else{
+      overcount = 0;
+      TIM_SetCounter(TIM1, 0);
+      TIM_Cmd(TIM1, ENABLE);
+      while(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == SET);
+      TIM_Cmd(TIM1, DISABLE);
+
+      if(TIM_GetCounter(TIM1) > UltraDis2){
+        Have_OB = Too_Far;
+      }else if(TIM_GetCounter(TIM1) > UltraDis1){
+        Have_OB = Middle;
+      }else{
+        Have_OB = Too_Near;
+      }
+
+    }
+    EXTI_ClearITPendingBit(EXTI_Line1);
+  }
 }
 
 void TIM1_IRQHandler(void)

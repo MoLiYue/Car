@@ -25,6 +25,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "delay.h"
+#include "key.h"
+#include "MotorDrive.h"
+#include "ultrasound.h"
+#include "elude.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -32,6 +37,7 @@
 /* Exported functions ------------------------------------------------------- */
 
 extern unsigned int UltraDis;
+extern u8 Maze_Mode;
 
 //#define 
 

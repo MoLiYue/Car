@@ -35,3 +35,4 @@
 ..\obj\stm32f10x_it.o: MotorDrive.h
 ..\obj\stm32f10x_it.o: bit_band.h
 ..\obj\stm32f10x_it.o: ultrasound.h
+..\obj\stm32f10x_it.o: elude.h
