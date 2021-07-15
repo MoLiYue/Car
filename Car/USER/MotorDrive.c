@@ -234,10 +234,13 @@ void Car_Become_Right(u8 speed)
 //---------------------------------
 void Car_Become_Left_Back(u8 speed)
 {
-	Motor_LF_backward(speed-DIFFERENTIAL);
-
-	Motor_RF_backward(speed);
-
+	if(speed-DIFFERENTIAL >= 0){
+		Motor_LF_backward(100-(speed-DIFFERENTIAL));
+		Motor_RF_backward(100-speed);
+	}else{
+		Motor_LF_forward(-speed+DIFFERENTIAL);
+		Motor_RF_backward(100-speed);
+	}
 }
 //---------------------------------
 
@@ -248,9 +251,12 @@ void Car_Become_Left_Back(u8 speed)
 //---------------------------------
 void Car_Become_Right_Back(u8 speed)
 {
-	Motor_LF_backward(speed);
-
-	Motor_RF_backward(speed-DIFFERENTIAL);
-
+	if(speed-DIFFERENTIAL >= 0){
+		Motor_LF_backward(100-speed);
+		Motor_RF_backward(100-(speed-DIFFERENTIAL));
+	}else{
+		Motor_LF_backward(100-speed);
+		Motor_RF_forward(-speed+DIFFERENTIAL);
+	}
 }
 //---------------------------------

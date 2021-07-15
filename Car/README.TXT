@@ -51,13 +51,13 @@ PA1(TIM2_CH2/TIM5_CH2)
 中断都有哪些：
 				抢占优先级		从优先级
 TIM1_IRQHandler
-TIM2_IRQHandler
+TIM2_IRQHandler	0x00			0x01			红外输入
 EXTI1_IRQHandler
 EXTI2_IRQHandler  0x00			0x00			key
 
+-------------------------------------------
 
 
-			
 			
 			
 			

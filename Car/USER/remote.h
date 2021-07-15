@@ -8,7 +8,7 @@
 #define	TIM2_Frequency_Divide	(71)		// TIM1时钟预分频值
 #define	TIM2_Reload_Num			(9999)		// 自动重装载寄存器的值
 
-#define REMOTE_ID               (0x0ff)       //遥控器识别码？？？
+#define REMOTE_ID               (0x0)       //遥控器识别码？？？（用户码）
 
 //--------------------------------------------------------------
 extern u8 RmtSta;

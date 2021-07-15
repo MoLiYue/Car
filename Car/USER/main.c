@@ -71,8 +71,7 @@ void Single_Line(u8 S_Trail_Input, u8 S_Elude_Input,
 	else{
 		Car_backward(50);	// 后退
 		delay_ms(500);
-		Car_Turn_Left(50);	// 左转
-		delay_ms(500);
+		Car_Stop(CAR_BREAK);	//刹车
 	}
 }
 
@@ -140,8 +139,87 @@ void Maze_Track(u8 S_Trail_Input){
 	if(Have_OB == 0){
 		//Car_forward(40);
 		
-		Single_Line(S_Trail_Input, Elude_detect_barrier(), 40, 40, 40);
+		Single_Line(S_Trail_Input, Elude_detect_barrier(), 80, 40, 40);
 	}else{
+		Car_Stop(CAR_BREAK);
+
+		TIM_SetCompare1(TIM5,ANGLE4);//Left
+		Have_OB = 0;
+		delay_ms(1000);								//wait for 舵机
+		
+		UltraDis = 900;
+		GPIO_SetBits(GPIOC,GPIO_Pin_0);
+		delay_us(10);
+		GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+		delay_ms(60);
+
+
+		if(Have_OB == 0){
+			//Car_backward(50);	// 后退
+			//delay_ms(500);
+			Car_Turn_Left(50);	//Left
+			delay_ms(370);
+			Car_Stop(CAR_BREAK);
+			
+			TIM_SetCompare1(TIM5,ANGLE2);//Forward
+			Have_OB = 0;
+		}else{
+		
+			TIM_SetCompare1(TIM5,ANGLE0);//Right
+			Have_OB = 0;
+			delay_ms(1000);								//wait for 舵机
+		//发射超声波信号------------------------------
+			GPIO_SetBits(GPIOC,GPIO_Pin_0);
+			delay_us(10);
+			GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+			delay_ms(60);
+		//-------------------------------------------
+			if(Have_OB == 0){
+				//Car_backward(50);	// 后退
+				//delay_ms(500);
+				Car_Turn_Right(50);	// Right
+				delay_ms(370);
+				Car_Stop(CAR_BREAK);
+				
+				TIM_SetCompare1(TIM5,ANGLE2);//Forward
+				Have_OB = 0;
+			}else{
+				Car_Turn_Right(50);	// Turn Around
+				delay_ms(700);
+				//Car_forward(40);
+				Car_Stop(CAR_BREAK);
+				
+				TIM_SetCompare1(TIM5,ANGLE2);//Forward
+				Have_OB = 0;
+			}
+		}
+		delay_ms(1000);								//wait for 舵机
+	}
+}
+
+void Maze_Track_v2(u8 S_Trail_Input){
+	
+	TIM_SetCompare1(TIM5,ANGLE4);//Left
+	Have_OB = 0;
+	delay_ms(1000);								//wait for 舵机
+
+	UltraDis = 900;				//设定超声波信号感知距离
+	//发射超声波信号----------------------------------
+	GPIO_SetBits(GPIOC,GPIO_Pin_0);
+	delay_us(10);
+	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+	delay_ms(60);
+	//-----------------------------------------------
+	if(Have_OB == 0){
+		//Car_forward(40);
+		
+		Single_Line(S_Trail_Input, Elude_detect_barrier(), 80, 40, 40);
+	}else{
+
+
+
+
+		
 		Car_Stop(CAR_BREAK);
 
 		TIM_SetCompare1(TIM5,ANGLE4);//Left
@@ -202,56 +280,32 @@ void Remote_Control(u8 key){
 	key = Remote_Scan();
 	if(key){ 
 		switch(key){ 
-			case 0:		//"ERROR"
-				break;
-			case 162:	//"POWER"
-				break;
-			case 98:	//"UP"
-				break;
-			case 2:		//"PLAY"
-				break;
-			case 226:	//"ALIENTEK"
-				break;
-			case 194:	//"RIGHT"
-				break; 
-			case 34:	//"LEFT"
-				break;
-			case 224:	//"VOL-"
-				break;
-			case 168:	//"DOWN"
-				break;
-			case 144:	//"VOL+"
-				break;
-			case 104:	//"1"	左转
+			case 104:	//"0"	左转
 				Car_Become_Left(80);
 				break;
-			case 152:	//"2"	前进
-				Car_forward(40);
+			case 152:	//"100+"	前进
+				Car_forward(100);
 				break;
-			case 176:	//"3"	右转
-				Car_Turn_Right(50);
+			case 176:	//"200+"	右转
+				Car_Become_Right(80);
 				break;
-			case 48:	//"4"	左旋转
+			case 48:	//"1"	左旋转
 				Car_Turn_Left(80);
 				break;
-			case 24:	//"5"	刹车
+			case 24:	//"2"	刹车
 				Car_Stop(CAR_BREAK);
 				break;
-			case 122:	//"6"	右旋转
-				Car_Turn_Right(50);
+			case 122:	//"3"	右旋转
+				Car_Turn_Right(80);
 				break;
-			case 16:	//"7"	左后转
+			case 16:	//"4"	左后转
 				Car_Become_Left_Back(80);
 				break;
-			case 56:	//"8"	后退
+			case 56:	//"5"	后退
 				Car_backward(50);
 				break;
-			case 90:	//"9"	右后转
+			case 90:	//"6"	右后转
 				Car_Become_Right_Back(80);
-				break;
-			case 66:	//"0"
-				break;
-			case 82:	//"DELETE"
 				break;
 			default:
 				break;

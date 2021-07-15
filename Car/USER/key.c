@@ -40,12 +40,14 @@ u8 KEY_Scan(u8 mode)
 	{ 
 		delay_ms(10);
 		key_up=0;
-		if(StatusMode%3 == 0)
+		if(StatusMode%4 == 0)
 			return Single_Track;
-		else if(StatusMode%3 == 1)
+		else if(StatusMode%4 == 1)
 			return Double_Track;
-		else if(StatusMode%3 == 2)
+		else if(StatusMode%4 == 2)
 			return Maze;
+		else if(StatusMode%4 == 3)
+			return RemoteControl;
 		StatusMode++;
 	}
 	else if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_2))

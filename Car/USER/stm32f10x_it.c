@@ -99,8 +99,9 @@ void EXTI2_IRQHandler(void)
 	{
 		delay_init();
 		{ 
+      delay_ms(10);
+      if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2)){
 			StatusMode++;			//have problem not solved
-			delay_ms(10);
 			if(StatusMode%4 == 0)
 				Stat = Single_Track;
 			else if(StatusMode%4 == 1)
@@ -109,6 +110,7 @@ void EXTI2_IRQHandler(void)
 				Stat = Maze;
       else if(StatusMode%4 == 3)
 				Stat = RemoteControl;
+      }
 		}
 		EXTI_ClearITPendingBit(EXTI_Line2);
 	}
@@ -160,38 +162,39 @@ void TIM2_IRQHandler(void)
   }
   if(TIM_GetITStatus(TIM2, TIM_IT_CC2)!=RESET){
     if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1)) { //上升沿捕获
-      TIM_OC4PolarityConfig(TIM2,TIM_ICPolarity_Falling); //下降沿捕获
+      TIM_OC2PolarityConfig(TIM2,TIM_ICPolarity_Falling); //下降沿捕获
       TIM_SetCounter(TIM2,0); // 清空定时器值
       RmtSta |= 0X10; // 标记上升沿已经被捕获
     }else { //下降沿捕获
-      Dval = TIM_GetCapture4(TIM2);// 读取 CCR1 也可以清 CC1IF 标志位 TIM_OC4PolarityConfig(TIM4,TIM_ICPolarity_Rising); // 上升沿捕获
+      Dval = TIM_GetCapture2(TIM2);// 读取 CCR1 也可以清 CC1IF 标志位 
+      TIM_OC2PolarityConfig(TIM2,TIM_ICPolarity_Rising); // 上升沿捕获
       if(RmtSta&0X10) { // 完成一次高电平捕获
         if(RmtSta&0X80)// 接收到了引导码
         { 
           if(Dval > 300 && Dval < 800) //560 为标准值 ,560us
           { 
-            RmtRec<<=1; // 左移一位
-            RmtRec|=0; // 接收到 0 
-          }else if(Dval>1400&&Dval<1800) //1680 为标准值 ,1680us
+            RmtRec <<= 1; // 左移一位
+            RmtRec |= 0; // 接收到 0 
+          }else if(Dval > 1400 && Dval < 1800) //1680 为标准值 ,1680us
           { 
-            RmtRec<<=1; // 左移一位
+            RmtRec <<= 1; // 左移一位
             RmtRec |= 1; // 接收到 1 
           }else if(Dval > 2200 && Dval < 2600)  // 得到按键键值增加的信息
                                           //2500 为标准值 2.5ms
           {
             RmtCnt++; // 按键次数增加 1次 
-            RmtSta&=0XF0; // 清空计时器
+            RmtSta &= 0XF0; // 清空计时器
           }
         }else if(Dval > 4200 && Dval < 4700)  //4500 为标准值 4.5ms
         {
-          RmtSta|= 1<<7; // 标记成功接收到了引导码
+          RmtSta |= 1<<7; // 标记成功接收到了引导码
           RmtCnt = 0; // 清除按键次数计数器
         }
       }
-      RmtSta&=~(1<<4);
+      RmtSta &= ~(1<<4);
     }
   }
-  TIM_ClearFlag(TIM2,TIM_IT_Update|TIM_IT_CC4);
+  TIM_ClearFlag(TIM2,TIM_IT_Update|TIM_IT_CC2);
 }
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

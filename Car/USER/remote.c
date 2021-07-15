@@ -14,7 +14,7 @@ void Remote_Control_Init(void){
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
     GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_1;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
@@ -59,7 +59,7 @@ u8 RmtCnt=0; //按键按下的次数
 u8 Remote_Scan(void){
     u8 sta = 0;
     u8 t1, t2;
-    if(RmtSta & (1<<6)){
+    if(RmtSta & (1<<6)){                //得到一个按键的所有信息了
         t1 = RmtRec >>24;               //得到地址码
         t2 = (RmtRec >> 16) & 0xff;     //得到地址反码
         if((t1 == (u8)~t2) && t1 == REMOTE_ID)// 检验遥控识别码 ( 及地址
@@ -69,10 +69,10 @@ u8 Remote_Scan(void){
             if(t1 == (u8)~t2)
                 sta=t1;// 键值正确
         }
-        if((sta==0) || ((RmtSta & 0X80) == 0))// 按键数据错误 /遥控已经没有按下了
+        if((sta==0) || ((RmtSta & 0x80) == 0))// 按键数据错误 /遥控已经没有按下了
         { 
-            RmtSta&=~(1<<6);// 清除接收到有效按键标识
-            RmtCnt=0; // 清除按键次数计数器
+            RmtSta &= ~(1<<6);// 清除接收到有效按键标识
+            RmtCnt = 0; // 清除按键次数计数器
         } 
     }
     return sta;
