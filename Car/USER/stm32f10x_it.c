@@ -28,10 +28,12 @@
         UltraDis1         UltraDis2
             900              1200
 */
+unsigned int UltraDis0 = 450;
 unsigned int UltraDis1 = 550;
-unsigned int UltraDis2 = 850;
+unsigned int UltraDis2 = 900;
+unsigned int UltraDis3 = 1300;
 
-unsigned int UltraDis = 850;
+unsigned int UltraDis = 1300;
 
 u8 Maze_Mode = 0;
 
@@ -104,20 +106,26 @@ void EXTI2_IRQHandler(void)
 	if(EXTI_GetITStatus(EXTI_Line2)!=RESET)
 	{
 		delay_init();
-		{ 
-      delay_ms(10);
-      if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2)){
-			StatusMode++;			//have problem not solved
-			if(StatusMode%4 == 0)
-				Stat = Single_Track;
-			else if(StatusMode%4 == 1)
-				Stat = Double_Track;
-			else if(StatusMode%4 == 2)
-				Stat = Maze;
+		 
+    delay_ms(10);
+    if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2)){
+      StatusMode++;			//have problem not solved
+      GPIO_SetBits(GPIOC, GPIO_Pin_3);
+      GPIO_SetBits(GPIOB, GPIO_Pin_6);
+      GPIO_SetBits(GPIOA, GPIO_Pin_6);
+      delay_ms(200);
+      if(StatusMode%4 == 0)
+        Stat = Single_Track;
+      else if(StatusMode%4 == 1)
+        Stat = Double_Track;
+      else if(StatusMode%4 == 2)
+        Stat = Maze;
       else if(StatusMode%4 == 3)
-				Stat = RemoteControl;
-      }
-		}
+        Stat = RemoteControl;
+    }
+    GPIO_ResetBits(GPIOA, GPIO_Pin_6);
+		GPIO_ResetBits(GPIOB, GPIO_Pin_6);
+    GPIO_ResetBits(GPIOC, GPIO_Pin_3);
 		EXTI_ClearITPendingBit(EXTI_Line2);
 	}
 }
@@ -145,12 +153,16 @@ void EXTI1_IRQHandler(void)
       while(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == SET);
       TIM_Cmd(TIM1, DISABLE);
 
-      if(TIM_GetCounter(TIM1) > UltraDis2){
-        Have_OB = Too_Far;
+      if(TIM_GetCounter(TIM1) > UltraDis3){
+        Have_OB = Too_Far1;
+      }else if(TIM_GetCounter(TIM1) > UltraDis2){
+        Have_OB = Too_Far0;
       }else if(TIM_GetCounter(TIM1) > UltraDis1){
         Have_OB = Middle;
+      }else if(TIM_GetCounter(TIM1) > UltraDis0){
+        Have_OB = Too_Near0;
       }else{
-        Have_OB = Too_Near;
+        Have_OB = Too_Near1;
       }
 
     }

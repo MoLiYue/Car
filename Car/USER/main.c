@@ -217,44 +217,62 @@ void Maze_Track_v2(u8 S_Trail_Input){
 	if(Elude_detect_barrier() == Not_Find_Barrier){
 		Maze_Mode = Tracking_Mode;
 		Have_OB = Middle;
-		if(TIM_GetCapture1(TIM5) != ANGLE4){
+		if(TIM_GetCapture1(TIM5) - ANGLE4 > 75 || TIM_GetCapture1(TIM5) - ANGLE4 < -75){
 			TIM_SetCompare1(TIM5,ANGLE4);		//Left
-			delay_ms(1000);								//wait for 舵机
+			delay_ms(500);								//wait for 舵机
 		}
 		Send_UltraSound_Signal();					//发射超声波信号
 
 		if(Have_OB == Middle){
-			//Car_forward(40);
+			Car_forward(50);
 			
-			Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 40, 40);
-		}else if(Have_OB == Too_Near){
+			//Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 80, 40);
+		}else if(Have_OB == Too_Near0){
+			DIFFERENTIAL = 30;
+			Car_Become_Right(70);
+			//delay_ms(50);
+			// DIFFERENTIAL = 100;
+			// Car_Become_Left(50);
+			// delay_ms(100);
+			//Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 80, 40);
+			//Car_forward(90);
+		}else if(Have_OB == Too_Near1){
 			DIFFERENTIAL = 55;
 			Car_Become_Right(90);
 			//delay_ms(100);
+		}else if(Have_OB == Too_Far0){
+			DIFFERENTIAL = 30;
+			Car_Become_Left(70);
+			//delay_ms(50);
+			// DIFFERENTIAL = 100;
+			// Car_Become_Right(50);
+			// delay_ms(100);
+			//Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 80, 40);
+			//Car_forward(90);
 		}else{
-			DIFFERENTIAL = 55;
-			Car_Become_Left(90);
-			//delay_ms(100);
+			DIFFERENTIAL = 65;
+			Car_Become_Left(100);
 		}
 	}else{
 		Maze_Mode = Obstacle_Avoidance_Mode;
 		DIFFERENTIAL = 90;
 		Car_Stop(CAR_BREAK);
-		delay_ms(150);
+		delay_ms(50);
 		Car_backward(50);					//倒车
 		delay_ms(300);
 		Car_Stop(CAR_BREAK);
-		if(TIM_GetCapture1(TIM5) != ANGLE4){
+		if(TIM_GetCapture1(TIM5) - ANGLE4 > 75 || TIM_GetCapture1(TIM5) - ANGLE4 < -75){
 			TIM_SetCompare1(TIM5,ANGLE4);		//Left
-			delay_ms(1000);								//wait for 舵机
+			delay_ms(500);								//wait for 舵机
 		}
 		Send_UltraSound_Signal();			//发射超声波信号
 
 		if(Have_OB == Ul_Not_Find_Barrier){	//左边无障碍
 			//Car_backward(50);	// 后退
 			//delay_ms(500);
-			Car_Turn_Left(50);	//Left
-			delay_ms(370);
+			DIFFERENTIAL = 100;
+			Car_Become_Left(100);	//Left
+			delay_ms(550);
 			Car_Stop(CAR_BREAK);
 			
 			Have_OB = Ul_Not_Find_Barrier;
@@ -262,16 +280,17 @@ void Maze_Track_v2(u8 S_Trail_Input){
 		
 			TIM_SetCompare1(TIM5,ANGLE0);	//Right
 			Have_OB = Ul_Not_Find_Barrier;
-			delay_ms(1000);								//wait for 舵机
+			delay_ms(500);								//wait for 舵机
 			Send_UltraSound_Signal();					//发射超声波信号
 			if(Have_OB == Ul_Not_Find_Barrier){	//右边无障碍
 				//Car_backward(50);	// 后退
 				//delay_ms(500);
-				Car_Turn_Right(50);	// Right
-				delay_ms(370);
+				DIFFERENTIAL = 100;
+				Car_Become_Right(100);	// Right
+				delay_ms(550);
 				Car_Stop(CAR_BREAK);
 				
-				TIM_SetCompare1(TIM5,ANGLE4);	//Forward
+				//TIM_SetCompare1(TIM5,ANGLE4);	//Forward
 				Have_OB = Ul_Not_Find_Barrier;
 			}else{
 				Car_Turn_Right(50);				// Turn Around
@@ -279,13 +298,67 @@ void Maze_Track_v2(u8 S_Trail_Input){
 				//Car_forward(40);
 				Car_Stop(CAR_BREAK);
 				
-				TIM_SetCompare1(TIM5,ANGLE4);	//Left
+				//TIM_SetCompare1(TIM5,ANGLE4);	//Left
 				Have_OB = Ul_Not_Find_Barrier;
 			}
-			delay_ms(1000);								//wait for 舵机
+			//delay_ms(1000);								//wait for 舵机
 		}
 	}
 }
+
+void Maze_Track_v3(u8 S_Trail_Input){
+	
+	if(Elude_detect_barrier() == Not_Find_Barrier){
+		Maze_Mode = Tracking_Mode;
+		Have_OB = Middle;
+		if(TIM_GetCapture1(TIM5) - ANGLE4 > 75 || TIM_GetCapture1(TIM5) - ANGLE4 < -75){
+			TIM_SetCompare1(TIM5,ANGLE4);		//Left
+			delay_ms(500);								//wait for 舵机
+		}
+		Send_UltraSound_Signal();					//发射超声波信号
+
+		if(Have_OB == Middle){
+			Car_forward(65);
+			
+			//Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 80, 40);
+		}else if(Have_OB == Too_Near0){
+			DIFFERENTIAL = 30;
+			Car_Become_Right(70);
+		}else if(Have_OB == Too_Near1){
+			DIFFERENTIAL = 55;
+			Car_Become_Right(90);
+		}else if(Have_OB == Too_Far0){
+			DIFFERENTIAL = 30;
+			Car_Become_Left(70);
+		}else{
+			DIFFERENTIAL = 65;
+			Car_Become_Left(100);
+		}
+	}else{
+		Maze_Mode = Obstacle_Avoidance_Mode;
+		DIFFERENTIAL = 90;
+		Car_Stop(CAR_BREAK);
+		delay_ms(50);
+		Car_backward(50);					//倒车
+		delay_ms(300);
+		Car_Stop(CAR_BREAK);
+
+		if(Have_OB == Ul_Not_Find_Barrier){	//左边无障碍
+			DIFFERENTIAL = 100;
+			Car_Become_Left(100);	//Left
+			delay_ms(450);
+			Car_Stop(CAR_BREAK);
+			Have_OB = Ul_Not_Find_Barrier;
+		}else{								//左边有障碍
+			DIFFERENTIAL = 100;
+			Car_Become_Right(100);	// Right
+			delay_ms(450);
+			Car_Stop(CAR_BREAK);
+			Have_OB = Ul_Not_Find_Barrier;
+		}
+	}
+}
+
 
 void Remote_Control(u8 key){
 	key = Remote_Scan();
@@ -325,7 +398,7 @@ void Remote_Control(u8 key){
 }
 
 int main(void){
-	u8 key = 0;
+	u8 key = 24;
 	
 	delay_init();
 	NVIC_Configuration();	//设置NVIC终端分组2：2
@@ -354,7 +427,7 @@ int main(void){
 				break;
 				
 			case Maze:
-				Maze_Track_v2(S_Trail_Input);
+				Maze_Track_v3(S_Trail_Input);
 				break;
 
 			case RemoteControl:
