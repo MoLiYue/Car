@@ -33,9 +33,9 @@
 #define     Too_Near1                    0x04    //距离过远
 //-----------------------------------------------------------------
 
-#define ANGLE0	(250)       //右
+#define ANGLE0	(300)       //右
 #define ANGLE1	(500)
-#define ANGLE2	(750)       //前
+#define ANGLE2	(770)       //前
 #define ANGLE3	(1000)
 #define ANGLE4	(1250)      //左
 

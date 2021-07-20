@@ -114,13 +114,15 @@ void EXTI2_IRQHandler(void)
       GPIO_SetBits(GPIOB, GPIO_Pin_6);
       GPIO_SetBits(GPIOA, GPIO_Pin_6);
       delay_ms(200);
-      if(StatusMode%4 == 0)
+      if(StatusMode % MODENUM == 0)
         Stat = Single_Track;
-      else if(StatusMode%4 == 1)
+      else if(StatusMode % MODENUM == 1)
         Stat = Double_Track;
-      else if(StatusMode%4 == 2)
-        Stat = Maze;
-      else if(StatusMode%4 == 3)
+      else if(StatusMode % MODENUM == 2)
+        Stat = Maze_V1;
+      else if(StatusMode % MODENUM == 3)
+        Stat = Maze_V2;
+      else if(StatusMode % MODENUM == 4)
         Stat = RemoteControl;
     }
     GPIO_ResetBits(GPIOA, GPIO_Pin_6);
@@ -183,19 +185,19 @@ void TIM2_IRQHandler(void)
 {
   if(TIM_GetITStatus(TIM2, TIM_IT_Update)!=RESET)
   {
-		if(RmtSta&0x80){ // 上次有数据被接收到了
-      RmtSta&=~0X10; // 取消上升沿已经被捕获标记
-      if((RmtSta&0X0F)==0X00)
+		if(RmtSta & 0x80){ // 上次有数据被接收到了
+      RmtSta &= ~0X10; // 取消上升沿已经被捕获标记
+      if((RmtSta & 0X0F) == 0X00)
         RmtSta |= 1<<6;// 标记已经完成一次键值信息采集
-      if((RmtSta &0X0F)<14)
+      if((RmtSta & 0X0F) < 14)
         RmtSta++;
       else{ 
-        RmtSta&=~(1<<7);// 清空引导标识
-        RmtSta&=0XF0; // 清空计数器
+        RmtSta &= ~(1<<7);// 清空引导标识
+        RmtSta &= 0XF0; // 清空计数器
       } 
     }
   }
-  if(TIM_GetITStatus(TIM2, TIM_IT_CC2)!=RESET){
+  if(TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET){
     if(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_1)) { //上升沿捕获
       TIM_OC2PolarityConfig(TIM2,TIM_ICPolarity_Falling); //下降沿捕获
       TIM_SetCounter(TIM2,0); // 清空定时器值
@@ -203,8 +205,8 @@ void TIM2_IRQHandler(void)
     }else { //下降沿捕获
       Dval = TIM_GetCapture2(TIM2);// 读取 CCR1 也可以清 CC1IF 标志位 
       TIM_OC2PolarityConfig(TIM2,TIM_ICPolarity_Rising); // 上升沿捕获
-      if(RmtSta&0X10) { // 完成一次高电平捕获
-        if(RmtSta&0X80)// 接收到了引导码
+      if(RmtSta & 0X10) { // 完成一次高电平捕获  0001 0000
+        if(RmtSta & 0X80)// 接收到了引导码  1000 0000
         { 
           if(Dval > 300 && Dval < 800) //560 为标准值 ,560us
           { 

@@ -56,13 +56,15 @@ u8 KEY_Scan(u8 mode)
 	{ 
 		delay_ms(10);
 		key_up=0;
-		if(StatusMode%4 == 0)
+		if(StatusMode % MODENUM == 0)
 			return Single_Track;
-		else if(StatusMode%4 == 1)
+		else if(StatusMode % MODENUM == 1)
 			return Double_Track;
-		else if(StatusMode%4 == 2)
-			return Maze;
-		else if(StatusMode%4 == 3)
+		else if(StatusMode % MODENUM == 2)
+			return Maze_V1;
+		else if(StatusMode % MODENUM == 3)
+			return Maze_V2;
+		else if(StatusMode % MODENUM == 4)
 			return RemoteControl;
 		StatusMode++;
 	}
