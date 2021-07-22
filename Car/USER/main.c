@@ -38,7 +38,7 @@ void Send_UltraSound_Signal(){
 	GPIO_SetBits(GPIOC,GPIO_Pin_0);
 	delay_us(10);
 	GPIO_ResetBits(GPIOC,GPIO_Pin_0);
-	delay_ms(60);
+	delay_ms(6);
 //-----------------------------------------------
 }
 
@@ -101,7 +101,7 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 		// 未发现黑线    forward
 		//-------------------------------------------------------	
 		if(S_Trail_Input == Not_Find_Black_Line)	{
-			Car_forward(70);				// 前进
+			Car_forward(50);				// 前进
 		}
 		//-------------------------------------------------------
 
@@ -111,7 +111,7 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 			//Car_backward(50);
 			//delay_ms(300);
 			Car_Turn_Right(50);
-			//delay_ms(50);
+			delay_ms(150);
 		}
 
 		// 右侧发现黑线
@@ -120,7 +120,7 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 			//Car_backward(50);
 			//delay_ms(300);
 			Car_Turn_Left(50);
-			//delay_ms(50);
+			delay_ms(150);
 		}
 		// 其他情况
 		//----------------------------------------------
@@ -131,7 +131,7 @@ void Dubble_Line(u8 S_Trail_Input, u8 S_Elude_Input){
 //			delay_ms(200);
 			
 			Car_Stop(CAR_BREAK);
-			//delay_ms(300);
+			delay_ms(300);
 		}
 	//----------------------------------------------
 	// Dubble Line
@@ -315,23 +315,29 @@ void Maze_Track_v3(u8 S_Trail_Input){
 		Have_OB = Middle;
 		if(TIM_GetCapture1(TIM5) - ANGLE4 > 75 || TIM_GetCapture1(TIM5) - ANGLE4 < -75){
 			TIM_SetCompare1(TIM5,ANGLE4);		//Left
-			delay_ms(500);								//wait for 舵机
+			//delay_ms(300);								//wait for 舵机
 		}
 		Send_UltraSound_Signal();					//发射超声波信号
 
 		if(Have_OB == Middle){
-			Car_forward(70);
+			Car_forward(100);
 			
 			//Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 80, 40);
 		}else if(Have_OB == Too_Near0){
-			DIFFERENTIAL = 30;
-			Car_Become_Right(70);
+			DIFFERENTIAL = 15;
+			Car_Become_Right(100);
 		}else if(Have_OB == Too_Near1){
+			DIFFERENTIAL = 30;
+			Car_Become_Right(90);
+		}else if(Have_OB == Too_Near2){
 			DIFFERENTIAL = 55;
 			Car_Become_Right(90);
 		}else if(Have_OB == Too_Far0){
+			DIFFERENTIAL = 15;
+			Car_Become_Left(100);
+		}else if(Have_OB == Too_Far1){
 			DIFFERENTIAL = 30;
-			Car_Become_Left(70);
+			Car_Become_Left(90);
 		}else{
 			DIFFERENTIAL = 65;
 			Car_Become_Left(100);
@@ -351,13 +357,13 @@ void Maze_Track_v3(u8 S_Trail_Input){
 		if(Have_OB == Ul_Not_Find_Barrier){	//左边无障碍
 			DIFFERENTIAL = 100;
 			Car_Become_Left(100);	//Left
-			delay_ms(425);
+			delay_ms(375);
 			Car_Stop(CAR_BREAK);
 			Have_OB = Ul_Not_Find_Barrier;
 		}else{								//左边有障碍
 			DIFFERENTIAL = 100;
 			Car_Become_Right(100);	// Right
-			delay_ms(425);
+			delay_ms(375);
 			Car_Stop(CAR_BREAK);
 			Have_OB = Ul_Not_Find_Barrier;
 		}
@@ -371,23 +377,29 @@ void Maze_Track_v4(u8 S_Trail_Input){
 		Have_OB = Middle;
 		if(TIM_GetCapture1(TIM5) - ANGLE0 > 75 || TIM_GetCapture1(TIM5) - ANGLE0 < -75){
 			TIM_SetCompare1(TIM5,ANGLE0);		//Left
-			delay_ms(500);								//wait for 舵机
+			//delay_ms(300);								//wait for 舵机
 		}
 		Send_UltraSound_Signal();					//发射超声波信号
 
 		if(Have_OB == Middle){
-			Car_forward(70);
+			Car_forward(100);
 			
 			//Single_Line(S_Trail_Input, Not_Find_Barrier, 90, 80, 40);
 		}else if(Have_OB == Too_Near0){
-			DIFFERENTIAL = 30;
-			Car_Become_Left(70);
+			DIFFERENTIAL = 15;
+			Car_Become_Left(100);
 		}else if(Have_OB == Too_Near1){
+			DIFFERENTIAL = 30;
+			Car_Become_Left(90);
+		}else if(Have_OB == Too_Near2){
 			DIFFERENTIAL = 55;
 			Car_Become_Left(90);
 		}else if(Have_OB == Too_Far0){
+			DIFFERENTIAL = 15;
+			Car_Become_Right(100);
+		}else if(Have_OB == Too_Far1){
 			DIFFERENTIAL = 30;
-			Car_Become_Right(70);
+			Car_Become_Right(90);
 		}else{
 			DIFFERENTIAL = 65;
 			Car_Become_Right(100);
@@ -407,13 +419,13 @@ void Maze_Track_v4(u8 S_Trail_Input){
 		if(Have_OB == Ul_Not_Find_Barrier){	//右边无障碍
 			DIFFERENTIAL = 100;
 			Car_Become_Right(100);	//Right
-			delay_ms(400);
+			delay_ms(375);
 			Car_Stop(CAR_BREAK);
 			Have_OB = Ul_Not_Find_Barrier;
 		}else{								//右边有障碍
 			DIFFERENTIAL = 100;
 			Car_Become_Left(100);	// Left
-			delay_ms(400);
+			delay_ms(375);
 			Car_Stop(CAR_BREAK);
 			Have_OB = Ul_Not_Find_Barrier;
 		}
@@ -479,7 +491,7 @@ int main(void){
 			
 			case Single_Track:
 				//Single_Line(S_Trail_Input, Elude_detect_barrier(), 50, 80, 90);
-				Single_Line(S_Trail_Input, Not_Find_Barrier, 70, 80, 90);
+				Single_Line(S_Trail_Input, Not_Find_Barrier, 50, 80, 90);
 				break;
 					
 			case Double_Track:

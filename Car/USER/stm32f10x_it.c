@@ -28,10 +28,19 @@
         UltraDis1         UltraDis2
             900              1200
 */
+//Too_Near2
 unsigned int UltraDis0 = 450;
+//Too_Near1
 unsigned int UltraDis1 = 550;
-unsigned int UltraDis2 = 900;
-unsigned int UltraDis3 = 1300;
+//Too_Near0
+unsigned int UltraDis2 = 650;
+//Middle
+unsigned int UltraDis3 = 750;
+//Too_Far0
+unsigned int UltraDis4 = 900;
+//Too_Far1
+unsigned int UltraDis5 = 1300;
+//Too_Far2
 
 unsigned int UltraDis = 1300;
 
@@ -155,16 +164,20 @@ void EXTI1_IRQHandler(void)
       while(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == SET);
       TIM_Cmd(TIM1, DISABLE);
 
-      if(TIM_GetCounter(TIM1) > UltraDis3){
+      if(TIM_GetCounter(TIM1) > UltraDis5){
+        Have_OB = Too_Far2;
+      }else if(TIM_GetCounter(TIM1) > UltraDis4){
         Have_OB = Too_Far1;
-      }else if(TIM_GetCounter(TIM1) > UltraDis2){
+      }else if(TIM_GetCounter(TIM1) > UltraDis3){
         Have_OB = Too_Far0;
-      }else if(TIM_GetCounter(TIM1) > UltraDis1){
+      }else if(TIM_GetCounter(TIM1) > UltraDis2){
         Have_OB = Middle;
-      }else if(TIM_GetCounter(TIM1) > UltraDis0){
+      }else if(TIM_GetCounter(TIM1) > UltraDis1){
         Have_OB = Too_Near0;
-      }else{
+      }else if(TIM_GetCounter(TIM1) > UltraDis0){
         Have_OB = Too_Near1;
+      }else{
+        Have_OB = Too_Near2;
       }
 
     }

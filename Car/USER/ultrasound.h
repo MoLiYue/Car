@@ -26,11 +26,13 @@
 #define     Tracking_Mode               0x00    //循迹模式
 #define     Obstacle_Avoidance_Mode     0x01    //避障模式
 
-#define     Too_Far1                     0x00    //距离过远
-#define     Too_Far0                     0x01    //距离过远
-#define     Middle                       0x02    //距离适中
-#define     Too_Near0                    0x03    //距离过远
-#define     Too_Near1                    0x04    //距离过远
+#define     Too_Far2                     0x00    //距离过远
+#define     Too_Far1                     0x01    //距离过远
+#define     Too_Far0                     0x02    //距离过远
+#define     Middle                       0x03    //距离适中
+#define     Too_Near0                    0x04    //距离过远
+#define     Too_Near1                    0x05    //距离过远
+#define     Too_Near2                    0x06    //距离过远
 //-----------------------------------------------------------------
 
 #define ANGLE0	(300)       //右
