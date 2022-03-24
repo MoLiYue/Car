@@ -112,10 +112,10 @@ void SysTick_Handler(void)
 
 void EXTI2_IRQHandler(void)
 { 
-	if(EXTI_GetITStatus(EXTI_Line2)!=RESET)
-	{
-		delay_init();
-		 
+    if(EXTI_GetITStatus(EXTI_Line2)!=RESET)
+    {
+        delay_init();
+         
     delay_ms(10);
     if(GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2)){
       StatusMode++;			//have problem not solved
@@ -135,17 +135,17 @@ void EXTI2_IRQHandler(void)
         Stat = RemoteControl;
     }
     GPIO_ResetBits(GPIOA, GPIO_Pin_6);
-		GPIO_ResetBits(GPIOB, GPIO_Pin_6);
+        GPIO_ResetBits(GPIOB, GPIO_Pin_6);
     GPIO_ResetBits(GPIOC, GPIO_Pin_3);
-		EXTI_ClearITPendingBit(EXTI_Line2);
-	}
+        EXTI_ClearITPendingBit(EXTI_Line2);
+    }
 }
 
-void EXTI1_IRQHandler(void)
+void EXTI1_IRQHandler(void) //超声波中断
 { 
-	if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
-	{
-    if(Maze_Mode == Obstacle_Avoidance_Mode){
+    if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
+    {
+    if(Maze_Mode == Obstacle_Avoidance_Mode){           //超声波避障
       overcount = 0;
       TIM_SetCounter(TIM1, 0);
       TIM_Cmd(TIM1, ENABLE);
@@ -157,7 +157,7 @@ void EXTI1_IRQHandler(void)
       }else{
         Have_OB = Ul_Find_Barrier;
       }
-    }else{
+    }else{                                                                              //迷宫超声波测距
       overcount = 0;
       TIM_SetCounter(TIM1, 0);
       TIM_Cmd(TIM1, ENABLE);
@@ -189,16 +189,16 @@ void TIM1_IRQHandler(void)
 {
 if(TIM_GetITStatus(TIM1, TIM_IT_Update)!=RESET)
   {
-		TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-		overcount++;
+        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+        overcount++;
   }
 }
 
-void TIM2_IRQHandler(void)
+void TIM2_IRQHandler(void)  //红外遥控中断
 {
   if(TIM_GetITStatus(TIM2, TIM_IT_Update)!=RESET)
   {
-		if(RmtSta & 0x80){ // 上次有数据被接收到了
+        if(RmtSta & 0x80){ // 上次有数据被接收到了
       RmtSta &= ~0X10; // 取消上升沿已经被捕获标记
       if((RmtSta & 0X0F) == 0X00)
         RmtSta |= 1<<6;// 标记已经完成一次键值信息采集
